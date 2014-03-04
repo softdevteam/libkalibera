@@ -73,10 +73,6 @@ def acr_plot(data, filename=None, title="ACR Plot",
     ylabel -- label on y-axis
     """
 
-    # de-mean the data
-    #mean = sum(data) / float(len(data))
-    #xs = [ x - mean for x in data ]
-
     plt.cla()
     plt.acorr(data, detrend=mlab.detrend_mean, usevlines=True,
             maxlags=None, normed=True, lw=2)
