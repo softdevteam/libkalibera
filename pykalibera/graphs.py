@@ -39,10 +39,13 @@ def lag_plot(data, lag=5, filename=None,
     Keyword arguments:
     lag -- which lag to plot
     filename -- filename to write graph to (None plots to screen)
-    title -- graph title
+    title -- graph title (if None, then "Lag %d plot" % lag is used)
     xlabel -- label on x-axis
     ylabel -- label on y-axis
     """
+
+    if title is None:
+        title = "Lag %d plot" % lag
 
     # Python's index operator allows correct wrapping if lag index
     # is less than zero.
