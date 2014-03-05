@@ -1,9 +1,6 @@
 import sys, os.path, random
 import pytest
 
-myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + '/../')
-
 # Allow to run out of source dir
 HERE = os.path.abspath(os.path.curdir)
 PARENT = os.path.join(HERE, "..")
