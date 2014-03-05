@@ -2,7 +2,7 @@ import sys, os.path, random
 import pytest
 
 # Allow to run out of source dir
-HERE = os.path.abspath(os.path.curdir)
+HERE = os.path.abspath(os.path.dirname(__file__))
 PARENT = os.path.join(HERE, "..")
 sys.path.append(PARENT)
 from pykalibera.graphs import run_sequence_plot, lag_plot, acr_plot
