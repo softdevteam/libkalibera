@@ -181,7 +181,7 @@ class Data(object):
         remaining_indicies_cross_product = \
                 self.index_iterator(start=len(indicies))
         alldata = [self[indicies + remaining] \
-                for remaining in remaining_indcies_cross_product]
+                for remaining in remaining_indicies_cross_product]
         return _mean(alldata)
 
     @memoize
