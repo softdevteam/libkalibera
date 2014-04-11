@@ -276,24 +276,9 @@ class Data(object):
         Keyword arguments:
         iterations -- Number of resamples (and thus means) generated.
         """
-
-        # Uses a closure to mimic the abritrary nested loop depth construct
-        # shown in the paper "Quantifying performance changes with effect
-        # size confidence intervals".
-        def _random_measurement_sample(index=()):
-            if len(index) == self.n:
-                yield self[index]
-            else:
-                indicies = [random.randrange(self.reps[len(index)]) \
-                        for i in range(self.reps[len(index)])]
-                for single_index in indicies:
-                    newindex = index + (single_index, )
-                    for value in _random_measurement_sample(newindex):
-                        yield value
-
         means = []
         for i in range(iterations):
-            values = list(_random_measurement_sample())
+            values = self._bootstrap_sample()
             means.append(_mean(values))
         means.sort()
         return means
@@ -309,6 +294,9 @@ class Data(object):
         return confidence_slice(means, confidence)
 
     def _bootstrap_sample(self):
+        # Uses a closure to mimic the abritrary nested loop depth construct
+        # shown in the paper "Quantifying performance changes with effect
+        # size confidence intervals".
         def _random_measurement_sample(index=()):
             if len(index) == self.n:
                 yield self[index]
