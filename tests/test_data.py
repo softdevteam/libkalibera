@@ -6,8 +6,8 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 PARENT = os.path.join(HERE, "..")
 sys.path.append(PARENT)
 
-from pykalibera.data import Data, _confidence_slice_indicies
-from pykalibera.data import confidence_slice_95
+from pykalibera.data import Data, _confidence_slice_indicies, _mean
+from pykalibera.data import confidence_slice
 
 # ----------------------------------
 # HELPER FIXTURES
@@ -225,14 +225,10 @@ def test_bootstrap():
 
 def test_confidence_slice_indicies():
     assert _confidence_slice_indicies(10, '0.8') == (1, (4, 5), 9)
-
-def test_confidence_slice_indicies():
     assert _confidence_slice_indicies(11, '0.8') == (1, (5, ), 10)
-
-def test_confidence_slice_indicies():
     assert _confidence_slice_indicies(1000) == (25, (499, 500), 975)
 
-def test_confidence_slice_95():
+def test_confidence_slice():
     # Suppose we get back the means:
     means = [ x + 15 for x in range(1000) ] # already sorted
 
@@ -262,8 +258,44 @@ def test_confidence_slice_95():
     median = 514.5
 
     # Check the implementation.
-    (got_lobo, got_median, got_hibo) = confidence_slice_95(means)
+    (got_lobo, got_median, got_hibo) = confidence_slice(means)
 
     assert got_lobo == lobo
     assert got_hibo == hibo
     assert median == got_median
+
+
+def test_confidence_slice_pass_confidence_level():
+    means = [float(x) for x in range(10)]
+    low, mean, high = confidence_slice(means, '0.8')
+    assert mean == (4 + 5) / 2.
+    assert low == 1
+    assert high == 8
+
+
+    means = [float(x) for x in range(11)]
+    low, mean, high = confidence_slice(means, '0.8')
+    assert mean == 5
+    assert low == 1
+    assert high == 9
+
+
+def test_confidence_quotient():
+    data1 = Data({
+            (0, ) : [ 2.5, 3.1, 2.7 ],
+            (1, ) : [ 5.1, 1.1, 2.3 ],
+            (2, ) : [ 4.7, 5.5, 7.1 ],
+            }, [3, 3])
+    data2 = Data({
+            (0, ) : [ 3.5, 4.1, 3.7 ],
+            (1, ) : [ 6.1, 2.1, 3.3 ],
+            (2, ) : [ 5.7, 6.5, 8.1 ],
+            }, [3, 3])
+
+    random.seed(1)
+    a = data1._bootstrap_sample()
+    b = data2._bootstrap_sample()
+
+    random.seed(1)
+    (_, mean, _) = data1.bootstrap_quotient(data2, iterations=1)
+    assert mean == _mean(a) / _mean(b)

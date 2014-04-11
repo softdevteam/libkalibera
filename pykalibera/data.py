@@ -56,7 +56,7 @@ def student_t_quantile95(ndeg):
         index = -1 # the quantile converges, we just take the last value
     return constants[index]
 
-def confidence_slice_95(means):
+def confidence_slice(means, confidence="0.95"):
     """Returns a tuples (lower, median, upper), where:
     lower: lower bound of 95% confidence interval
     median: the median value of the data
@@ -67,7 +67,7 @@ def confidence_slice_95(means):
     """
 
     means = sorted(means)
-    lower, mean_indicies, upper = _confidence_slice_indicies(len(means))
+    lower, mean_indicies, upper = _confidence_slice_indicies(len(means), confidence)
     mean = _mean([means[i] for i in mean_indicies])
     return means[lower], mean, means[upper - 1] # upper is *exclusive*
 
@@ -295,9 +295,10 @@ class Data(object):
         for i in range(iterations):
             values = list(_random_measurement_sample())
             means.append(_mean(values))
+        means.sort()
         return means
 
-    def bootstrap_confidence_interval(self, iterations=10000):
+    def bootstrap_confidence_interval(self, iterations=10000, confidence="0.95"):
         """Compute a 95% confidence interval via bootstrap method.
 
         Keyword arguments:
@@ -305,4 +306,26 @@ class Data(object):
         """
 
         means = self.bootstrap_means(iterations)
-        return confidence_slice_95(means, iterations)
+        return confidence_slice(means, confidence)
+
+    def _bootstrap_sample(self):
+        def _random_measurement_sample(index=()):
+            if len(index) == self.n:
+                yield self[index]
+            else:
+                indicies = [random.randrange(self.reps[len(index)]) \
+                        for i in range(self.reps[len(index)])]
+                for single_index in indicies:
+                    newindex = index + (single_index, )
+                    for value in _random_measurement_sample(newindex):
+                        yield value
+        return list(_random_measurement_sample())
+
+    def bootstrap_quotient(self, other, iterations=10000, confidence='0.95'):
+        ratios = []
+        for _ in range(iterations):
+            ra = self._bootstrap_sample()
+            rb = other._bootstrap_sample()
+            ratios.append(_mean(ra) / _mean(rb))
+        ratios.sort()
+        return confidence_slice(ratios, confidence)
