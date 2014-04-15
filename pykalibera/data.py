@@ -314,6 +314,12 @@ class Data(object):
         for _ in range(iterations):
             ra = self._bootstrap_sample()
             rb = other._bootstrap_sample()
-            ratios.append(_mean(ra) / _mean(rb))
+            mean_ra = _mean(ra)
+            mean_rb = _mean(rb)
+
+            if mean_rb == 0: # protect against divide by zero
+                ratios.append(float("inf"))
+            else:
+                ratios.append(mean_ra / mean_rb)
         ratios.sort()
         return confidence_slice(ratios, confidence)
