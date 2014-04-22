@@ -113,7 +113,6 @@ def test_si2_bigger_example():
 
     assert abs(d.Si2(1)-0.72667) <= 0.0001
 
-@pytest.mark.xfail
 def test_ti2():
     # To verify this, consider the following data:
     d = Data({
@@ -124,14 +123,12 @@ def test_ti2():
     }, [2, 2, 3])
 
     # Let's manually look at S_i^2 where 1 <= i <= n:
-    si_vec = [ d.Si2(i) for i in range(1, 4) ]
+    #si_vec = [ d.Si2(i) for i in range(1, 4) ]
+    #print(si_vec)
+
     ti_vec = [ d.Ti2(i) for i in range (1, 4) ]
+    expect = [ 0.7266667, 0.262777778, 0.7747 ]
 
-    expect = [ 0.7266666, 0.262777778, 0.89584 ]
-
-    # XXX XXX XXX
-    # These assertions will fail since the expected outcomes were
-    # generated using the broken definition from the paper.
     for i in range(len(expect)):
         assert abs(ti_vec[i] - expect[i]) <= 0.0001
 
