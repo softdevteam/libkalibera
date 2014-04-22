@@ -299,3 +299,19 @@ def test_confidence_quotient():
     random.seed(1)
     (_, mean, _) = data1.bootstrap_quotient(data2, iterations=1)
     assert mean == _mean(a) / _mean(b)
+
+def test_confidence_quotient_div_zero():
+    data1 = Data({
+            (0, ) : [ 2.5, 3.1, 2.7 ],
+            (1, ) : [ 5.1, 1.1, 2.3 ],
+            (2, ) : [ 4.7, 5.5, 7.1 ],
+            }, [3, 3])
+    data2 = Data({ # This has a mean of zero
+            (0, ) : [ 0, 0, 0],
+            (1, ) : [ 0, 0, 0],
+            (2, ) : [ 0, 0, 0],
+            }, [3, 3])
+
+    # Since all ratios will be +inf, the median should also be +inf
+    (_, median, _) = data1.bootstrap_quotient(data2, iterations=1)
+    assert median== float("inf")
