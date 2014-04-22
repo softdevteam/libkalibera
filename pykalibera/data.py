@@ -253,7 +253,7 @@ class Data(object):
 
         Arguments:
         i -- the mathematical level of which to compute optimal reps.
-        costs -- A list of costs for each level, XXX high to low? XXX.
+        costs -- A list of costs for each level, *high* to *low*.
         """
 
         costs = [ float(x) for x in costs ]

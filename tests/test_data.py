@@ -154,7 +154,6 @@ def test_ti2():
     for i in range(len(expect)):
         assert abs(ti_vec[i] - expect[i]) <= 0.0001
 
-@pytest.mark.xfail
 def test_optimal_reps():
     d = Data({
         (0, 0) : [3,4,3],
@@ -163,15 +162,14 @@ def test_optimal_reps():
         (1, 1) : [1, 2, 3]
     }, [2, 2, 3])
 
-    ti_vec = [ d.Ti2(i) for i in range (1, 4) ]
+    #ti_vec = [ d.Ti2(i) for i in range (1, 4) ]
+    #print(ti_vec)
 
     # And suppose the costs (high level to low) are 100, 20 and 3 (seconds)
     # By my reckoning, the optimal repetition counts should be r_1 = 5, r_2 = 2
     # XXX show working XXX
-    # XXX Again since the expected outcome is from the broken
-    # definition of T_i^2, this will fail
     got = [ d.optimalreps(i, (100, 20, 3)) for i in [1,2] ]
-    expect = [4.2936, 1.211] # working below
+    expect = [4.2937, 1.3023]
 
     for i in range(len(got)):
         assert abs(got[i] - expect[i]) <= 0.001
