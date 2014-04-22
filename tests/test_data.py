@@ -32,6 +32,28 @@ def test_indicies():
     assert d[0, 0, 4] == 5
     assert d[0, 1, 2] == 5
 
+def test_rep_levels():
+    d = Data({
+        (0, 0) : [1, 2, 3, 4, 5],
+        (0, 1) : [3, 4, 5, 6, 7]
+        }, [1, 2, 5])
+
+    assert d.r(1) == 5 # lowest level, i.e. arity of the lists in the map
+    assert d.r(2) == 2
+    assert d.r(3) == 1
+
+    # indexs are one based, so 0 or less is invalid
+    with pytest.raises(AssertionError):
+        d.r(0)
+    with pytest.raises(AssertionError):
+        d.r(-1337)
+
+    # Since we have 3 levels here, levels 4 and above are bogus
+    with pytest.raises(AssertionError):
+        d.r(4)
+    with pytest.raises(AssertionError):
+        d.r(666)
+
 def test_index_iter():
     d = Data({
         (0, 0) : [1, 2, 3, 4, 5],
