@@ -13,9 +13,12 @@ added.
 Each implementation has one subdirectory in the repo:
 
 - Python (Edd Barrett, Carl Friedrich Bolz)
+- Ruby (transliteration from Python by Chris Seaton)
 
 ## Research Deploying LibKalibera
 
 The following academic papers used this library:
 
 - [Approaches to Interpreter Composition. Edd Barrett, Carl Friedrich Bolz, Laurence Tratt](http://arxiv.org/abs/1409.0757) -- Python
+
+- Dynamically Composing Languages in a Modular Way: Supporting C Extensions for Dynamic Languages. Matthias Grimmer, Chris Seaton, Thomas Wuerthinger, Hanspeter Moessenboeck. Modularity 2015 (to appear) -- Python

@@ -1,0 +1,10 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rbzip2 (0.2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rbzip2 (~> 0.2.0)
