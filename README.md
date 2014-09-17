@@ -8,6 +8,14 @@ The Kalibera Method, as described in the papers:
 The library started as a Python module, but more implementations are being
 added.
 
+## Implementations
+
+Each implementation has one subdirectory in the repo:
+
+- Python (Edd Barrett, Carl Friedrich Bolz)
+
+## Research Deploying LibKalibera
+
 The following academic papers used this library:
 
-- [Approaches to Interpreter Composition. Edd Barrett, Carl Friedrich Bolz, Laurence Tratt](http://arxiv.org/abs/1409.0757)
+- [Approaches to Interpreter Composition. Edd Barrett, Carl Friedrich Bolz, Laurence Tratt](http://arxiv.org/abs/1409.0757) -- Python
