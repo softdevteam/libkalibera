@@ -261,7 +261,6 @@ class TestRbKaliberaData < Test::Unit::TestCase
   end
 
   def test_bootstrap
-    skip('returns a different floating point result - may be due to random numbers?')
     # XXX needs info on how expected val was computed
     data = TestData.new({
         [0] => [ 2.5, 3.1, 2.7 ],
@@ -270,7 +269,7 @@ class TestRbKaliberaData < Test::Unit::TestCase
         }, [3, 3])
     data.reset_local_rand
 
-    expect = 2.17777777 # TRANSLITERATION: 4.8111111111
+    expect = 4.8111111111
     got = data.bootstrap_means(1) # one iteration
 
     assert_less_equal (got[0] - expect).abs, 0.0001
