@@ -53,20 +53,20 @@ class TestKaliberaData < Test::Unit::TestCase
     assert_equal 1, d.r(3)
 
     # indexs are one based, so 0 or less is invalid
-    assert_raise Kalibera::AssertionError do
+    assert_raise RuntimeError do
       d.r(0)
     end
 
-    assert_raise Kalibera::AssertionError do
+    assert_raise RuntimeError do
       d.r(-1337)
     end
 
     # Since we have 3 levels here, levels 4 and above are bogus
-    assert_raise Kalibera::AssertionError do
+    assert_raise RuntimeError do
       d.r(4)
     end
 
-    assert_raise Kalibera::AssertionError do
+    assert_raise RuntimeError do
       d.r(666)
     end
   end

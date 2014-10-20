@@ -82,9 +82,9 @@ module Kalibera
   # Keyword arguments:
   # confidence_level -- desired level of confidence as a Decimal instance.
   def self.confidence_slice_indicies(length, confidence_level=BigDecimal.new('0.95'))
-    Kalibera.assert !confidence_level.instance_of?(Float)
+    raise unless !confidence_level.instance_of?(Float)
     confidence_level = BigDecimal.new(confidence_level)
-    Kalibera.assert confidence_level.instance_of?(BigDecimal)
+    raise unless confidence_level.instance_of?(BigDecimal)
     exclude = (1 - confidence_level) / 2
 
     if length % 2 == 0
@@ -131,9 +131,9 @@ module Kalibera
     end
 
     def [](*indicies)
-      Kalibera.assert indicies.size == @reps.size
+      raise unless indicies.size == @reps.size
       x = @data[indicies[0...indicies.size-1]]
-      Kalibera.assert !x.nil?
+      raise unless !x.nil?
       x[indicies[-1]]
     end
 
@@ -160,8 +160,8 @@ module Kalibera
     # Arguments:
     # i -- mathematical index.
     def r(i)
-      Kalibera.assert 1 <= i
-      Kalibera.assert i <= n
+      raise unless 1 <= i
+      raise unless i <= n
       index = n - i
       @reps[index]
     end
@@ -185,8 +185,8 @@ module Kalibera
     # Arguments:
     # i -- the mathematical index of the level from which to compute S_i^2
     def Si2(i)
-      Kalibera.assert 1 <= i
-      Kalibera.assert i <= n
+      raise unless 1 <= i
+      raise unless i <= n
       # @reps is indexed from the left to right
       index = n - i
       factor = 1.0
@@ -229,15 +229,15 @@ module Kalibera
       #  i -- the mathematical index from which to compute T_i^2.
       #  """
       #
-      #  Kalibera.assert 1 <= i <= n
+      #  raise unless 1 <= i <= n
       #  if i == 1:
       #    return self.Si2(1)
       #  return self.Si2(i) - self.Ti2(i - 1) / self.r(i - 1)
 
       # This is the correct definition of T_i^2
 
-      Kalibera.assert 1 <= i
-      Kalibera.assert i <= n
+      raise unless 1 <= i
+      raise unless i <= n
       if i == 1
         return Si2(1)
       end
@@ -256,8 +256,8 @@ module Kalibera
     def optimalreps(i, costs)
       # NOTE: Does not round
       costs = costs.map { |x| Float(x) }
-      Kalibera.assert 1 <= i
-      Kalibera.assert i < n
+      raise unless 1 <= i
+      raise unless i < n
       index = n - i
       return (costs[index - 1] / costs[index] *
           Ti2(i) / Ti2(i + 1)) ** 0.5
@@ -297,25 +297,23 @@ module Kalibera
       confidence_slice(means, confidence)
     end
 
-    def bootstrap_sample
-      # Uses a closure to mimic the abritrary nested loop depth construct
-      # shown in the paper "Quantifying performance changes with effect
-      # size confidence intervals".
-      def random_measurement_sample(index=[])
-        results = []
-        if index.size == n
-          results.push self[*index]
-        else
-          indicies = (0...@reps[index.size]).map { |i| rand(@reps[index.size]) }
-          for single_index in indicies
-            newindex = index + [single_index]
-            for value in random_measurement_sample(newindex)
-              results.push value
-            end
+    def random_measurement_sample(index=[])
+      results = []
+      if index.size == n
+        results.push self[*index]
+      else
+        indicies = (0...@reps[index.size]).map { |i| rand(@reps[index.size]) }
+        for single_index in indicies
+          newindex = index + [single_index]
+          for value in random_measurement_sample(newindex)
+            results.push value
           end
         end
-        results
       end
+      results
+    end
+
+    def bootstrap_sample
       random_measurement_sample
     end
 
@@ -337,13 +335,6 @@ module Kalibera
       Kalibera.confidence_slice(ratios, confidence)
     end
 
-  end
-
-  class AssertionError < Exception
-  end
-
-  def self.assert(condition)
-    raise AssertionError unless condition
   end
 
 end
