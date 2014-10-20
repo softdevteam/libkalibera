@@ -18,7 +18,7 @@ class TestData < Kalibera::Data
     @rand_counter = 0
   end
 
-  def local_rand(r)
+  def rand(r)
     raise "mock rand designed for range=3" unless r == 3
     raise "mock rand out of data" unless @rand_counter < RAND.size
 
@@ -28,10 +28,6 @@ class TestData < Kalibera::Data
   end
 
 end
-
-# ----------------------------------
-# TESTS BEGIN
-# ----------------------------------
 
 class TestKaliberaData < Test::Unit::TestCase
 

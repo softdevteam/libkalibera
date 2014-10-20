@@ -112,7 +112,7 @@ module Kalibera
 
     extend Memoist
 
-    # nstances of this class store measurements (corresponding to
+    # Instances of this class store measurements (corresponding to
     # the Y_... in the papers).
     #
     # Arguments:
@@ -128,10 +128,6 @@ module Kalibera
       array[0].product(*array.drop(1)).each do |index|
         self[*index] # does not crash
       end
-    end
-
-    def local_rand(r)
-      rand(r)
     end
 
     def [](*indicies)
@@ -310,7 +306,7 @@ module Kalibera
         if index.size == n
           results.push self[*index]
         else
-          indicies = (0...@reps[index.size]).map { |i| local_rand(@reps[index.size]) }
+          indicies = (0...@reps[index.size]).map { |i| rand(@reps[index.size]) }
           for single_index in indicies
             newindex = index + [single_index]
             for value in random_measurement_sample(newindex)
