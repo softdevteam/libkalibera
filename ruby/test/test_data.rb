@@ -276,9 +276,9 @@ class TestKaliberaData < Test::Unit::TestCase
   end
 
   def test_confidence_slice_indicies
-    assert_equal [1, [4, 5], 9], Kalibera._confidence_slice_indicies(10, '0.8')
-    assert_equal [1, [5], 10], Kalibera._confidence_slice_indicies(11, '0.8')
-    assert_equal [25, [499, 500], 975], Kalibera._confidence_slice_indicies(1000)
+    assert_equal [1, [4, 5], 9], Kalibera.confidence_slice_indicies(10, '0.8')
+    assert_equal [1, [5], 10], Kalibera.confidence_slice_indicies(11, '0.8')
+    assert_equal [25, [499, 500], 975], Kalibera.confidence_slice_indicies(1000)
   end
 
   def test_confidence_slice
@@ -347,13 +347,13 @@ class TestKaliberaData < Test::Unit::TestCase
 
     data1.reset_local_rand
     data2.reset_local_rand
-    a = data1._bootstrap_sample()
-    b = data2._bootstrap_sample()
+    a = data1.bootstrap_sample()
+    b = data2.bootstrap_sample()
 
     data1.reset_local_rand
     data2.reset_local_rand
     _, mean, _ = data1.bootstrap_quotient(data2, iterations=1)
-    assert_equal Kalibera._mean(a) / Kalibera._mean(b), mean
+    assert_equal Kalibera.mean(a) / Kalibera.mean(b), mean
   end
 
   def test_confidence_quotient_div_zero

@@ -70,8 +70,8 @@ module Kalibera
   def self.confidence_slice(means, confidence="0.95")
     means = means.sort
     # There may be >1 median indicies, i.e. data is even-sized.
-    lower, middle_indicies, upper = _confidence_slice_indicies(means.size, confidence)
-    median = _mean(middle_indicies.map { |i| means[i] })
+    lower, middle_indicies, upper = confidence_slice_indicies(means.size, confidence)
+    median = mean(middle_indicies.map { |i| means[i] })
     [means[lower], median, means[upper - 1]] # upper is *exclusive*
   end
 
@@ -81,7 +81,7 @@ module Kalibera
   #
   # Keyword arguments:
   # confidence_level -- desired level of confidence as a Decimal instance.
-  def self._confidence_slice_indicies(length, confidence_level=BigDecimal.new('0.95'))
+  def self.confidence_slice_indicies(length, confidence_level=BigDecimal.new('0.95'))
     Kalibera.assert !confidence_level.instance_of?(Float)
     confidence_level = BigDecimal.new(confidence_level)
     Kalibera.assert confidence_level.instance_of?(BigDecimal)
@@ -104,7 +104,7 @@ module Kalibera
     [lower_index, mean_indicies, upper_index]
   end
 
-  def self._mean(l)
+  def self.mean(l)
     l.inject(0, :+) / Float(l.size)
   end
 
@@ -179,7 +179,7 @@ module Kalibera
       remaining_indicies_cross_product =
           index_iterator(start=indicies.size)
       alldata = remaining_indicies_cross_product.map { |remaining| self[*(indicies + remaining)] }
-      Kalibera._mean(alldata)
+      Kalibera.mean(alldata)
     end
 
     memoize :mean
@@ -285,8 +285,8 @@ module Kalibera
     def bootstrap_means(iterations=1000)
       means = []
       for i in 0...iterations
-        values = _bootstrap_sample()
-        means.push(Kalibera._mean(values))
+        values = bootstrap_sample()
+        means.push(Kalibera.mean(values))
       end
       means.sort()
       means
@@ -301,7 +301,7 @@ module Kalibera
       confidence_slice(means, confidence)
     end
 
-    def _bootstrap_sample
+    def bootstrap_sample
       # Uses a closure to mimic the abritrary nested loop depth construct
       # shown in the paper "Quantifying performance changes with effect
       # size confidence intervals".
@@ -326,10 +326,10 @@ module Kalibera
     def bootstrap_quotient(other, iterations=10000, confidence='0.95')
       ratios = []
       for _ in 0...iterations
-        ra = _bootstrap_sample()
-        rb = other._bootstrap_sample()
-        mean_ra = Kalibera._mean(ra)
-        mean_rb = Kalibera._mean(rb)
+        ra = bootstrap_sample()
+        rb = other.bootstrap_sample()
+        mean_ra = Kalibera.mean(ra)
+        mean_rb = Kalibera.mean(rb)
 
         if mean_rb == 0 # protect against divide by zero
           ratios.push(Float::INFINITY)
