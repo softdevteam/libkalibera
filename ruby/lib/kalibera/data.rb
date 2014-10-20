@@ -2,6 +2,7 @@ require "stringio"
 require "base64"
 require "rbzip2"
 require "bigdecimal"
+require "memoist"
 
 module Kalibera
 
@@ -74,29 +75,6 @@ module Kalibera
     [means[lower], median, means[upper - 1]] # upper is *exclusive*
   end
 
-  # TRANSLITERATION: removed
-
-  #def memoize(func)
-  #  """ The @memoize decorator """
-  #  attr = "%s_%s" % [func.func_name, id(func)]
-  #  def memoized(self, *args)
-  #    d = @_memoization_values
-  #    key = attr, args
-  #    try:
-  #      return d[key]
-  #    except KeyError:
-  #      res = d[key] = func(self, *args)
-  #      return res
-  #  end
-  #  return memoized
-  #end
-
-  # Used for index calculation to not get weird float effects.
-  # We actually saw some of these effects in our exerimentation.
-  
-  # TRANSLITERATION: REMOVED
-  #from decimal import Decimal, ROUND_UP, ROUND_DOWN
-
   # Returns a triple (lower, mean_indicies, upper) so that l[lower:upper]
   # gives confidence_level of all samples. Mean_indicies is a tuple of one or
   # two indicies that correspond to the mean position
@@ -132,6 +110,8 @@ module Kalibera
 
   class Data
 
+    extend Memoist
+
     # nstances of this class store measurements (corresponding to
     # the Y_... in the papers).
     #
@@ -142,7 +122,6 @@ module Kalibera
       @data = data
       @reps = reps
 
-      @_memoization_values = {}
       # check that all data is there
 
       array = reps.map { |i| (0...i).to_a }
@@ -197,19 +176,19 @@ module Kalibera
     # indicies -- tuple of fixed indicies over which to compute the mean,
     # given from left to right. The remaining indicies are variable.
     def mean(indicies=[])
-      # TRANSLITERATION: removed @memoize
       remaining_indicies_cross_product =
           index_iterator(start=indicies.size)
       alldata = remaining_indicies_cross_product.map { |remaining| self[*(indicies + remaining)] }
       Kalibera._mean(alldata)
     end
 
+    memoize :mean
+
     # Biased estimator S_i^2.
     # 
     # Arguments:
     # i -- the mathematical index of the level from which to compute S_i^2
     def Si2(i)
-      # TRANSLITERATION: removed @memoize
       Kalibera.assert 1 <= i
       Kalibera.assert i <= n
       # @reps is indexed from the left to right
@@ -236,6 +215,8 @@ module Kalibera
       factor * sum
     end
 
+    memoize :Si2
+
     # Compute the unbiased T_i^2 variance estimator.
     # 
     # Arguments:
@@ -258,7 +239,6 @@ module Kalibera
       #  return self.Si2(i) - self.Ti2(i - 1) / self.r(i - 1)
 
       # This is the correct definition of T_i^2
-      #@memoize
 
       Kalibera.assert 1 <= i
       Kalibera.assert i <= n
@@ -267,6 +247,8 @@ module Kalibera
       end
       Si2(i) - Si2(i - 1) / r(i - 1)
     end
+
+    memoize :Ti2
 
     # Computes the optimal number of repetitions for a given level.
     #
@@ -277,7 +259,6 @@ module Kalibera
     # costs -- A list of costs for each level, *high* to *low*.
     def optimalreps(i, costs)
       # NOTE: Does not round
-      # TRANSLITERATION: removed @memoize
       costs = costs.map { |x| Float(x) }
       Kalibera.assert 1 <= i
       Kalibera.assert i < n
@@ -285,6 +266,8 @@ module Kalibera
       return (costs[index - 1] / costs[index] *
           Ti2(i) / Ti2(i + 1)) ** 0.5
     end
+
+    memoize :optimalreps
 
     # Compute the 95% confidence interval.
     def confidence95
