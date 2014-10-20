@@ -56,7 +56,7 @@ module Kalibera
     if index >= CONSTANTS.size
       index = -1 # the quantile converges, we just take the last value
     end
-    return CONSTANTS[index]
+    CONSTANTS[index]
   end
 
   # Returns a tuples (lower, median, upper), where:
@@ -71,7 +71,7 @@ module Kalibera
     # There may be >1 median indicies, i.e. data is even-sized.
     lower, middle_indicies, upper = _confidence_slice_indicies(means.size, confidence)
     median = _mean(middle_indicies.map { |i| means[i] })
-    return means[lower], median, means[upper - 1] # upper is *exclusive*
+    [means[lower], median, means[upper - 1]] # upper is *exclusive*
   end
 
   # TRANSLITERATION: removed
@@ -123,11 +123,11 @@ module Kalibera
         ((1 - exclude) * length).round(0, BigDecimal::ROUND_UP) # TRANSLITERATION: was quantize 1.
     )
 
-    return [lower_index, mean_indicies, upper_index]
+    [lower_index, mean_indicies, upper_index]
   end
 
   def self._mean(l)
-    return l.inject(0, :+) / Float(l.size)
+    l.inject(0, :+) / Float(l.size)
   end
 
   class Data
@@ -160,7 +160,7 @@ module Kalibera
       Kalibera.assert indicies.size == @reps.size
       x = @data[indicies[0...indicies.size-1]]
       Kalibera.assert !x.nil?
-      return x[indicies[-1]]
+      x[indicies[-1]]
     end
 
     # Computes a list of all possible data indcies gievn that
@@ -173,12 +173,12 @@ module Kalibera
       maximum_indicies = @reps[start...stop]
       remaining_indicies = maximum_indicies.map { |maximum| (0...maximum).to_a }
       return [[]] if remaining_indicies.empty?
-      return remaining_indicies[0].product(*remaining_indicies.drop(1))
+      remaining_indicies[0].product(*remaining_indicies.drop(1))
     end
 
     # The number of levels in the experiment.
     def n
-      return @reps.size
+      @reps.size
     end
 
     # The number of repetitions for level i.
@@ -189,7 +189,7 @@ module Kalibera
       Kalibera.assert 1 <= i
       Kalibera.assert i <= n
       index = n - i
-      return @reps[index]
+      @reps[index]
     end
 
     # Compute the mean across a number of values.
@@ -202,7 +202,7 @@ module Kalibera
       remaining_indicies_cross_product =
           index_iterator(start=indicies.size)
       alldata = remaining_indicies_cross_product.map { |remaining| self[*(indicies + remaining)] }
-      return Kalibera._mean(alldata)
+      Kalibera._mean(alldata)
     end
 
     # Biased estimator S_i^2.
@@ -234,7 +234,7 @@ module Kalibera
         b = mean(index[0,index.size-1])
         sum += (a - b) ** 2
       end
-      return factor * sum
+      factor * sum
     end
 
     # Compute the unbiased T_i^2 variance estimator.
@@ -266,7 +266,7 @@ module Kalibera
       if i == 1
         return Si2(1)
       end
-      return Si2(i) - Si2(i - 1) / r(i - 1)
+      Si2(i) - Si2(i - 1) / r(i - 1)
     end
 
     # Computes the optimal number of repetitions for a given level.
@@ -290,7 +290,7 @@ module Kalibera
     # Compute the 95% confidence interval.
     def confidence95
       degfreedom = @reps[0] - 1
-      return student_t_quantile95(degfreedom) *
+      student_t_quantile95(degfreedom) *
         (Si2(n) / @reps[0]) ** 0.5
     end
 
@@ -307,7 +307,7 @@ module Kalibera
         means.push(Kalibera._mean(values))
       end
       means.sort()
-      return means
+      means
     end
 
     # Compute a 95% confidence interval via bootstrap method.
@@ -316,7 +316,7 @@ module Kalibera
     # iterations -- Number of resamplings to base result upon.
     def bootstrap_confidence_interval(iterations=10000, confidence="0.95")
       means = bootstrap_means(iterations)
-      return confidence_slice(means, confidence)
+      confidence_slice(means, confidence)
     end
 
     def _bootstrap_sample
@@ -338,7 +338,7 @@ module Kalibera
         end
         results
       end
-      return _random_measurement_sample()
+      _random_measurement_sample()
     end
 
     def bootstrap_quotient(other, iterations=10000, confidence='0.95')
@@ -356,7 +356,7 @@ module Kalibera
         end
       end
       ratios.sort()
-      return Kalibera.confidence_slice(ratios, confidence)
+      Kalibera.confidence_slice(ratios, confidence)
     end
 
   end
