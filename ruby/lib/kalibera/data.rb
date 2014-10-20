@@ -305,7 +305,7 @@ module Kalibera
       # Uses a closure to mimic the abritrary nested loop depth construct
       # shown in the paper "Quantifying performance changes with effect
       # size confidence intervals".
-      def _random_measurement_sample(index=[])
+      def random_measurement_sample(index=[])
         results = []
         if index.size == n
           results.push self[*index]
@@ -313,14 +313,14 @@ module Kalibera
           indicies = (0...@reps[index.size]).map { |i| local_rand(@reps[index.size]) }
           for single_index in indicies
             newindex = index + [single_index]
-            for value in _random_measurement_sample(newindex)
+            for value in random_measurement_sample(newindex)
               results.push value
             end
           end
         end
         results
       end
-      _random_measurement_sample()
+      random_measurement_sample
     end
 
     def bootstrap_quotient(other, iterations=10000, confidence='0.95')
