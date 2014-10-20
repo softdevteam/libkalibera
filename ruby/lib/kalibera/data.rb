@@ -152,7 +152,6 @@ module Kalibera
     end
 
     def local_rand(r)
-      raise "LOCAL_RAND"
       rand(r)
     end
 
