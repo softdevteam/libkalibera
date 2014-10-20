@@ -1,10 +1,10 @@
 require "test/unit"
 
-require "rbkalibera"
+require "kalibera"
 
 # We need to match Python's random numbers when testing
 
-class TestData < RbKalibera::Data
+class TestData < Kalibera::Data
 
   RAND = [0, 2, 2, 0, 1, 1, 1, 2, 0, 0, 2, 1, 2, 0, 1, 2, 0, 2, 2, 0, 0, 1,
           2, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 2, 1, 1, 0, 2, 2, 0, 0]
@@ -33,7 +33,7 @@ end
 # TESTS BEGIN
 # ----------------------------------
 
-class TestRbKaliberaData < Test::Unit::TestCase
+class TestKaliberaData < Test::Unit::TestCase
 
   def test_indicies
     d = TestData.new({
@@ -57,20 +57,20 @@ class TestRbKaliberaData < Test::Unit::TestCase
     assert_equal 1, d.r(3)
 
     # indexs are one based, so 0 or less is invalid
-    assert_raise RbKalibera::AssertionError do
+    assert_raise Kalibera::AssertionError do
       d.r(0)
     end
 
-    assert_raise RbKalibera::AssertionError do
+    assert_raise Kalibera::AssertionError do
       d.r(-1337)
     end
 
     # Since we have 3 levels here, levels 4 and above are bogus
-    assert_raise RbKalibera::AssertionError do
+    assert_raise Kalibera::AssertionError do
       d.r(4)
     end
 
-    assert_raise RbKalibera::AssertionError do
+    assert_raise Kalibera::AssertionError do
       d.r(666)
     end
   end
@@ -276,9 +276,9 @@ class TestRbKaliberaData < Test::Unit::TestCase
   end
 
   def test_confidence_slice_indicies
-    assert_equal [1, [4, 5], 9], RbKalibera._confidence_slice_indicies(10, '0.8')
-    assert_equal [1, [5], 10], RbKalibera._confidence_slice_indicies(11, '0.8')
-    assert_equal [25, [499, 500], 975], RbKalibera._confidence_slice_indicies(1000)
+    assert_equal [1, [4, 5], 9], Kalibera._confidence_slice_indicies(10, '0.8')
+    assert_equal [1, [5], 10], Kalibera._confidence_slice_indicies(11, '0.8')
+    assert_equal [25, [499, 500], 975], Kalibera._confidence_slice_indicies(1000)
   end
 
   def test_confidence_slice
@@ -311,7 +311,7 @@ class TestRbKaliberaData < Test::Unit::TestCase
     median = 514.5
 
     # Check the implementation.
-    got_lobo, got_median, got_hibo = RbKalibera.confidence_slice(means)
+    got_lobo, got_median, got_hibo = Kalibera.confidence_slice(means)
 
     assert_equal lobo, got_lobo
     assert_equal hibo, got_hibo
@@ -320,14 +320,14 @@ class TestRbKaliberaData < Test::Unit::TestCase
 
   def test_confidence_slice_pass_confidence_level
     means = (0...10).map { |x| Float(x) }
-    low, mean, high = RbKalibera.confidence_slice(means, '0.8')
+    low, mean, high = Kalibera.confidence_slice(means, '0.8')
     assert_equal (4 + 5) / 2.0, mean
     assert_equal 1, low
     assert_equal 8, high
 
 
     means = (0...11).map { |x| Float(x) }
-    low, mean, high = RbKalibera.confidence_slice(means, '0.8')
+    low, mean, high = Kalibera.confidence_slice(means, '0.8')
     assert_equal 5, mean
     assert_equal 1, low
     assert_equal 9, high
@@ -353,7 +353,7 @@ class TestRbKaliberaData < Test::Unit::TestCase
     data1.reset_local_rand
     data2.reset_local_rand
     _, mean, _ = data1.bootstrap_quotient(data2, iterations=1)
-    assert_equal RbKalibera._mean(a) / RbKalibera._mean(b), mean
+    assert_equal Kalibera._mean(a) / Kalibera._mean(b), mean
   end
 
   def test_confidence_quotient_div_zero

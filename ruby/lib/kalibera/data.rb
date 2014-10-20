@@ -3,7 +3,7 @@ require "base64"
 require "rbzip2"
 require "bigdecimal"
 
-module RbKalibera
+module Kalibera
 
   CONSTANTS = RBzip2::Decompressor.new(StringIO.new(Base64.decode64("""\
   QlpoOTFBWSZTWbTS4VUAC9bYAEAQAAF/4GAOGZ3e40HH2YJERUKomGbCNMAAtMBaAkCOP9U0/R+q
@@ -108,9 +108,9 @@ module RbKalibera
     confidence_level -- desired level of confidence as a Decimal instance.
     """
 
-    RbKalibera.assert !confidence_level.instance_of?(Float)
+    Kalibera.assert !confidence_level.instance_of?(Float)
     confidence_level = BigDecimal.new(confidence_level)
-    RbKalibera.assert confidence_level.instance_of?(BigDecimal)
+    Kalibera.assert confidence_level.instance_of?(BigDecimal)
     exclude = (1 - confidence_level) / 2
 
     if length % 2 == 0
@@ -165,9 +165,9 @@ module RbKalibera
     end
 
     def [](*indicies)
-      RbKalibera.assert indicies.size == @reps.size
+      Kalibera.assert indicies.size == @reps.size
       x = @data[indicies[0...indicies.size-1]]
-      RbKalibera.assert !x.nil?
+      Kalibera.assert !x.nil?
       return x[indicies[-1]]
     end
 
@@ -197,8 +197,8 @@ module RbKalibera
       Arguments:
       i -- mathematical index.
       """
-      RbKalibera.assert 1 <= i
-      RbKalibera.assert i <= n
+      Kalibera.assert 1 <= i
+      Kalibera.assert i <= n
       index = n - i
       return @reps[index]
     end
@@ -214,7 +214,7 @@ module RbKalibera
       remaining_indicies_cross_product =
           self.index_iterator(start=indicies.size)
       alldata = remaining_indicies_cross_product.map { |remaining| self[*(indicies + remaining)] }
-      return RbKalibera._mean(alldata)
+      return Kalibera._mean(alldata)
     end
 
     # TRANSLITERATION: removed @memoize
@@ -224,8 +224,8 @@ module RbKalibera
       Arguments:
       i -- the mathematical index of the level from which to compute S_i^2
       """
-      RbKalibera.assert 1 <= i
-      RbKalibera.assert i <= n
+      Kalibera.assert 1 <= i
+      Kalibera.assert i <= n
       # @reps is indexed from the left to right
       index = n - i
       factor = 1.0
@@ -261,7 +261,7 @@ module RbKalibera
     #  i -- the mathematical index from which to compute T_i^2.
     #  """
     #
-    #  RbKalibera.assert 1 <= i <= n
+    #  Kalibera.assert 1 <= i <= n
     #  if i == 1:
     #    return self.Si2(1)
     #  return self.Si2(i) - self.Ti2(i - 1) / self.r(i - 1)
@@ -275,8 +275,8 @@ module RbKalibera
       i -- the mathematical index from which to compute T_i^2.
       """
 
-      RbKalibera.assert 1 <= i
-      RbKalibera.assert i <= n
+      Kalibera.assert 1 <= i
+      Kalibera.assert i <= n
       if i == 1
         return self.Si2(1)
       end
@@ -296,8 +296,8 @@ module RbKalibera
       """
 
       costs = costs.map { |x| Float(x) }
-      RbKalibera.assert 1 <= i
-      RbKalibera.assert i < n
+      Kalibera.assert 1 <= i
+      Kalibera.assert i < n
       index = n - i
       return (costs[index - 1] / costs[index] *
           self.Ti2(i) / self.Ti2(i + 1)) ** 0.5
@@ -322,7 +322,7 @@ module RbKalibera
       means = []
       for i in 0...iterations
         values = self._bootstrap_sample()
-        means.push(RbKalibera._mean(values))
+        means.push(Kalibera._mean(values))
       end
       means.sort()
       return means
@@ -366,8 +366,8 @@ module RbKalibera
       for _ in 0...iterations
         ra = self._bootstrap_sample()
         rb = other._bootstrap_sample()
-        mean_ra = RbKalibera._mean(ra)
-        mean_rb = RbKalibera._mean(rb)
+        mean_ra = Kalibera._mean(ra)
+        mean_rb = Kalibera._mean(rb)
 
         if mean_rb == 0 # protect against divide by zero
           ratios.push(Float::INFINITY)
@@ -376,7 +376,7 @@ module RbKalibera
         end
       end
       ratios.sort()
-      return RbKalibera.confidence_slice(ratios, confidence)
+      return Kalibera.confidence_slice(ratios, confidence)
     end
 
   end
