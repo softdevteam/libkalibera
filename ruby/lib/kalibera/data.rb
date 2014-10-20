@@ -200,7 +200,7 @@ module Kalibera
     def mean(indicies=[])
       # TRANSLITERATION: removed @memoize
       remaining_indicies_cross_product =
-          self.index_iterator(start=indicies.size)
+          index_iterator(start=indicies.size)
       alldata = remaining_indicies_cross_product.map { |remaining| self[*(indicies + remaining)] }
       return Kalibera._mean(alldata)
     end
@@ -227,11 +227,11 @@ module Kalibera
       factor /=  @reps[index] - 1
 
       # Second line of the above definition, the lines are multiplied.
-      indicies = self.index_iterator(0, index+1)
+      indicies = index_iterator(0, index+1)
       sum = 0.0
       for index in indicies
-        a = self.mean(index)
-        b = self.mean(index[0,index.size-1])
+        a = mean(index)
+        b = mean(index[0,index.size-1])
         sum += (a - b) ** 2
       end
       return factor * sum
@@ -264,9 +264,9 @@ module Kalibera
       Kalibera.assert 1 <= i
       Kalibera.assert i <= n
       if i == 1
-        return self.Si2(1)
+        return Si2(1)
       end
-      return self.Si2(i) - self.Si2(i - 1) / self.r(i - 1)
+      return Si2(i) - Si2(i - 1) / r(i - 1)
     end
 
     # Computes the optimal number of repetitions for a given level.
@@ -284,14 +284,14 @@ module Kalibera
       Kalibera.assert i < n
       index = n - i
       return (costs[index - 1] / costs[index] *
-          self.Ti2(i) / self.Ti2(i + 1)) ** 0.5
+          Ti2(i) / Ti2(i + 1)) ** 0.5
     end
 
     # Compute the 95% confidence interval.
     def confidence95
       degfreedom = @reps[0] - 1
       return student_t_quantile95(degfreedom) *
-        (self.Si2(n) / @reps[0]) ** 0.5
+        (Si2(n) / @reps[0]) ** 0.5
     end
 
     # Compute a list of simulated means from bootstrap resampling.
@@ -303,7 +303,7 @@ module Kalibera
     def bootstrap_means(iterations=1000)
       means = []
       for i in 0...iterations
-        values = self._bootstrap_sample()
+        values = _bootstrap_sample()
         means.push(Kalibera._mean(values))
       end
       means.sort()
@@ -315,7 +315,7 @@ module Kalibera
     # Keyword arguments:
     # iterations -- Number of resamplings to base result upon.
     def bootstrap_confidence_interval(iterations=10000, confidence="0.95")
-      means = self.bootstrap_means(iterations)
+      means = bootstrap_means(iterations)
       return confidence_slice(means, confidence)
     end
 
@@ -344,7 +344,7 @@ module Kalibera
     def bootstrap_quotient(other, iterations=10000, confidence='0.95')
       ratios = []
       for _ in 0...iterations
-        ra = self._bootstrap_sample()
+        ra = _bootstrap_sample()
         rb = other._bootstrap_sample()
         mean_ra = Kalibera._mean(ra)
         mean_rb = Kalibera._mean(rb)
