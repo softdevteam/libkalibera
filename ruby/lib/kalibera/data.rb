@@ -50,8 +50,8 @@ module Kalibera
   N2YyvJh9wuO75VOarCWLEUdLavAs2RShYOntLrMVabUAyDnTJIQ4deJa92pAWd6KBz+F3JFOFCQt
   NLhVQA=="""))).read.split().map { |x| Float(x) }
 
+  # Look up the 95% quantile from constant table.
   def self.student_t_quantile95(ndeg)
-    """Look up the 95% quantile from constant table."""
     index = ndeg - 1
     if index >= CONSTANTS.size
       index = -1 # the quantile converges, we just take the last value
@@ -59,16 +59,14 @@ module Kalibera
     return CONSTANTS[index]
   end
 
+  # Returns a tuples (lower, median, upper), where:
+  # lower: lower bound of 95% confidence interval
+  # median: the median value of the data
+  # upper: uper bound of 95% confidence interval
+  # 
+  # Arguments:
+  # means -- the list of means (need not be sorted).
   def self.confidence_slice(means, confidence="0.95")
-    """Returns a tuples (lower, median, upper), where:
-    lower: lower bound of 95% confidence interval
-    median: the median value of the data
-    upper: uper bound of 95% confidence interval
-
-    Arguments:
-    means -- the list of means (need not be sorted).
-    """
-
     means = means.sort
     # There may be >1 median indicies, i.e. data is even-sized.
     lower, middle_indicies, upper = _confidence_slice_indicies(means.size, confidence)
@@ -99,15 +97,13 @@ module Kalibera
   # TRANSLITERATION: REMOVED
   #from decimal import Decimal, ROUND_UP, ROUND_DOWN
 
+  # Returns a triple (lower, mean_indicies, upper) so that l[lower:upper]
+  # gives confidence_level of all samples. Mean_indicies is a tuple of one or
+  # two indicies that correspond to the mean position
+  #
+  # Keyword arguments:
+  # confidence_level -- desired level of confidence as a Decimal instance.
   def self._confidence_slice_indicies(length, confidence_level=BigDecimal.new('0.95'))
-    """Returns a triple (lower, mean_indicies, upper) so that l[lower:upper]
-    gives confidence_level of all samples. Mean_indicies is a tuple of one or
-    two indicies that correspond to the mean position
-
-    Keyword arguments:
-    confidence_level -- desired level of confidence as a Decimal instance.
-    """
-
     Kalibera.assert !confidence_level.instance_of?(Float)
     confidence_level = BigDecimal.new(confidence_level)
     Kalibera.assert confidence_level.instance_of?(BigDecimal)
@@ -134,19 +130,15 @@ module Kalibera
     return l.inject(0, :+) / Float(l.size)
   end
 
-  # ---
-
   class Data
 
+    # nstances of this class store measurements (corresponding to
+    # the Y_... in the papers).
+    #
+    # Arguments:
+    # data -- Dict mapping tuples of all but the last index to lists of values.
+    # reps -- List of reps for each level, high to low.
     def initialize(data, reps)
-      """Instances of this class store measurements (corresponding to
-      the Y_... in the papers).
-
-      Arguments:
-      data -- Dict mapping tuples of all but the last index to lists of values.
-      reps -- List of reps for each level, high to low.
-      """
-
       @data = data
       @reps = reps
 
@@ -171,10 +163,9 @@ module Kalibera
       return x[indicies[-1]]
     end
 
+    # Computes a list of all possible data indcies gievn that
+    # start <= index <= stop are fixed.
     def index_iterator(start=0, stop=nil)
-      """Computes a list of all possible data indcies gievn that
-      start <= index <= stop are fixed."""
-
       if stop.nil?
         stop = n
       end
@@ -185,45 +176,41 @@ module Kalibera
       return remaining_indicies[0].product(*remaining_indicies.drop(1))
     end
 
-    @property
+    # The number of levels in the experiment.
     def n
-      """The number of levels in the experiment."""
       return @reps.size
     end
 
+    # The number of repetitions for level i.
+    #
+    # Arguments:
+    # i -- mathematical index.
     def r(i)
-      """The number of repetitions for level i.
-
-      Arguments:
-      i -- mathematical index.
-      """
       Kalibera.assert 1 <= i
       Kalibera.assert i <= n
       index = n - i
       return @reps[index]
     end
 
-    # TRANSLITERATION: removed @memoize
+    # Compute the mean across a number of values.
+    #
+    # Keyword arguments:
+    # indicies -- tuple of fixed indicies over which to compute the mean,
+    # given from left to right. The remaining indicies are variable.
     def mean(indicies=[])
-      """Compute the mean across a number of values.
-
-      Keyword arguments:
-      indicies -- tuple of fixed indicies over which to compute the mean,
-      given from left to right. The remaining indicies are variable."""
-
+      # TRANSLITERATION: removed @memoize
       remaining_indicies_cross_product =
           self.index_iterator(start=indicies.size)
       alldata = remaining_indicies_cross_product.map { |remaining| self[*(indicies + remaining)] }
       return Kalibera._mean(alldata)
     end
 
-    # TRANSLITERATION: removed @memoize
+    # Biased estimator S_i^2.
+    # 
+    # Arguments:
+    # i -- the mathematical index of the level from which to compute S_i^2
     def Si2(i)
-      """Biased estimator S_i^2.
-
-      Arguments:
-      i -- the mathematical index of the level from which to compute S_i^2
-      """
+      # TRANSLITERATION: removed @memoize
       Kalibera.assert 1 <= i
       Kalibera.assert i <= n
       # @reps is indexed from the left to right
@@ -250,30 +237,29 @@ module Kalibera
       return factor * sum
     end
 
-    # This is the broken implementation of T_i^2 shown in the pubslished
-    # version of "Rigorous benchmarking in reasonable time". Tomas has
-    # since fixed this in local versions of the paper.
-    #@memoize
-    #def broken_Ti2(self, i)
-    #  """ Compute the unbiased T_i^2 variance estimator.
-    #
-    #  Arguments:
-    #  i -- the mathematical index from which to compute T_i^2.
-    #  """
-    #
-    #  Kalibera.assert 1 <= i <= n
-    #  if i == 1:
-    #    return self.Si2(1)
-    #  return self.Si2(i) - self.Ti2(i - 1) / self.r(i - 1)
-
-    # This is the correct definition of T_i^2
-    #@memoize
+    # Compute the unbiased T_i^2 variance estimator.
+    # 
+    # Arguments:
+    # i -- the mathematical index from which to compute T_i^2.
     def Ti2(i)
-      """Compute the unbiased T_i^2 variance estimator.
+      # This is the broken implementation of T_i^2 shown in the pubslished
+      # version of "Rigorous benchmarking in reasonable time". Tomas has
+      # since fixed this in local versions of the paper.
+      #@memoize
+      #def broken_Ti2(self, i)
+      #  """ Compute the unbiased T_i^2 variance estimator.
+      #
+      #  Arguments:
+      #  i -- the mathematical index from which to compute T_i^2.
+      #  """
+      #
+      #  Kalibera.assert 1 <= i <= n
+      #  if i == 1:
+      #    return self.Si2(1)
+      #  return self.Si2(i) - self.Ti2(i - 1) / self.r(i - 1)
 
-      Arguments:
-      i -- the mathematical index from which to compute T_i^2.
-      """
+      # This is the correct definition of T_i^2
+      #@memoize
 
       Kalibera.assert 1 <= i
       Kalibera.assert i <= n
@@ -283,18 +269,16 @@ module Kalibera
       return self.Si2(i) - self.Si2(i - 1) / self.r(i - 1)
     end
 
-    # NOTE: Does not round
-    # TRANSLITERATION: removed @memoize
+    # Computes the optimal number of repetitions for a given level.
+    #
+    # Note that the resulting number of reps is not rounded.
+    #
+    # Arguments:
+    # i -- the mathematical level of which to compute optimal reps.
+    # costs -- A list of costs for each level, *high* to *low*.
     def optimalreps(i, costs)
-      """Computes the optimal number of repetitions for a given level.
-
-      Note that the resulting number of reps is not rounded.
-
-      Arguments:
-      i -- the mathematical level of which to compute optimal reps.
-      costs -- A list of costs for each level, *high* to *low*.
-      """
-
+      # NOTE: Does not round
+      # TRANSLITERATION: removed @memoize
       costs = costs.map { |x| Float(x) }
       Kalibera.assert 1 <= i
       Kalibera.assert i < n
@@ -303,22 +287,20 @@ module Kalibera
           self.Ti2(i) / self.Ti2(i + 1)) ** 0.5
     end
 
+    # Compute the 95% confidence interval.
     def confidence95
-      """Compute the 95% confidence interval."""
-
       degfreedom = @reps[0] - 1
       return student_t_quantile95(degfreedom) *
         (self.Si2(n) / @reps[0]) ** 0.5
     end
 
+    # Compute a list of simulated means from bootstrap resampling.
+    #
+    # Note that, resampling occurs with replacement.
+    #
+    # Keyword arguments:
+    # iterations -- Number of resamples (and thus means) generated.
     def bootstrap_means(iterations=1000)
-      """Compute a list of simulated means from bootstrap resampling.
-
-      Note that, resampling occurs with replacement.
-
-      Keyword arguments:
-      iterations -- Number of resamples (and thus means) generated.
-      """
       means = []
       for i in 0...iterations
         values = self._bootstrap_sample()
@@ -328,13 +310,11 @@ module Kalibera
       return means
     end
 
+    # Compute a 95% confidence interval via bootstrap method.
+    #
+    # Keyword arguments:
+    # iterations -- Number of resamplings to base result upon.
     def bootstrap_confidence_interval(iterations=10000, confidence="0.95")
-      """Compute a 95% confidence interval via bootstrap method.
-
-      Keyword arguments:
-      iterations -- Number of resamplings to base result upon.
-      """
-
       means = self.bootstrap_means(iterations)
       return confidence_slice(means, confidence)
     end
