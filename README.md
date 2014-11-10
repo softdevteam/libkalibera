@@ -1,24 +1,5 @@
-# LibKalibera
+# libkalibera
 
-The Kalibera Method, as described in the papers:
+Implementations of The Kalibera Method.
 
-- [Rigorous benchmarking in reasonable time. Tomas Kalibera, Richard Jones](http://dl.acm.org/citation.cfm?doid=2464157.2464160)
-- [Quantifying performance changes with effect size confidence intervals. Tomas Kalibera, Richard Jones](http://www.cs.kent.ac.uk/pubs/2012/3233/)
-
-The library started as a Python module, but more implementations are being
-added.
-
-## Implementations
-
-Each implementation has one subdirectory in the repo:
-
-- Python (Edd Barrett, Carl Friedrich Bolz)
-- Ruby (transliteration from Python by Chris Seaton)
-
-## Research Deploying LibKalibera
-
-The following academic papers used this library:
-
-- [Approaches to Interpreter Composition. Edd Barrett, Carl Friedrich Bolz, Laurence Tratt](http://arxiv.org/abs/1409.0757) -- Python
-
-- Dynamically Composing Languages in a Modular Way: Supporting C Extensions for Dynamic Languages. Matthias Grimmer, Chris Seaton, Thomas Wuerthinger, Hanspeter Moessenboeck. Modularity 2015 (to appear) -- Python
+For more information, see: http://soft-dev.org/src/libkalibera/
