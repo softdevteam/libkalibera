@@ -232,12 +232,11 @@ class Data(object):
         # we use the revised version below.
         return self.Si2(i) - self.Si2(i - 1) / self.r(i - 1)
 
-    # NOTE: Does not round
     @memoize
     def optimalreps(self, i, costs):
         """Computes the optimal number of repetitions for a given level.
-
-        Note that the resulting number of reps is not rounded.
+        The result is a float. In most cases, the caller should round this to
+        an integral number of repetitions.
 
         Arguments:
         i -- the mathematical level of which to compute optimal reps.
