@@ -233,7 +233,7 @@ class Data(object):
         return self.Si2(i) - self.Si2(i - 1) / self.r(i - 1)
 
     @memoize
-    def optimalreps(self, i, costs, round=False):
+    def optimalreps(self, i, costs, round=True):
         """Computes the optimal number of repetitions for a given level.
 
         Arguments:

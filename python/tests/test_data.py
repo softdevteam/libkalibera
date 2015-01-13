@@ -168,7 +168,7 @@ def test_optimal_reps_no_rounding():
     # And suppose the costs (high level to low) are 100, 20 and 3 (seconds)
     # By my reckoning, the optimal repetition counts should be r_1 = 5, r_2 = 2
     # XXX show working XXX
-    got = [ d.optimalreps(i, (100, 20, 3)) for i in [1,2] ]
+    got = [d.optimalreps(i, (100, 20, 3), round=False) for i in [1,2]]
     expect = [4.2937, 1.3023]
 
     for i in range(len(got)):
@@ -187,7 +187,7 @@ def test_optimal_reps_with_rounding():
         (1, 1) : [1, 2, 3]
     }, [2, 2, 3])
 
-    got = [d.optimalreps(i, (100, 20, 3), round=True) for i in [1,2]]
+    got = [d.optimalreps(i, (100, 20, 3)) for i in [1,2]]
     expect = [5, 2]
 
     for i in range(len(got)):
