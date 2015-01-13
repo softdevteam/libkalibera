@@ -214,23 +214,6 @@ class Data(object):
             sum += (a - b) ** 2
         return factor * sum
 
-    # This is the broken implementation of T_i^2 shown in the pubslished
-    # version of "Rigorous benchmarking in reasonable time". Tomas has
-    # since fixed this in local versions of the paper.
-    #@memoize
-    #def broken_Ti2(self, i):
-    #    """ Compute the unbiased T_i^2 variance estimator.
-    #
-    #    Arguments:
-    #    i -- the mathematical index from which to compute T_i^2.
-    #    """
-    #
-    #    assert 1 <= i <= self.n
-    #    if i == 1:
-    #        return self.Si2(1)
-    #    return self.Si2(i) - self.Ti2(i - 1) / self.r(i - 1)
-
-    # This is the correct definition of T_i^2
     @memoize
     def Ti2(self, i):
         """Compute the unbiased T_i^2 variance estimator.
@@ -242,6 +225,11 @@ class Data(object):
         assert 1 <= i <= self.n
         if i == 1:
             return self.Si2(1)
+        # Note: in the "Rigorous benchmarking in reasonable time", the
+        # expression belown was incorrectly shown as being equivalent to:
+        #   return self.Si2(i) - self.Ti2(i - 1) / self.r(i - 1)
+        # This has since been corrected in a revised version of the paper, and
+        # we use the revised version below.
         return self.Si2(i) - self.Si2(i - 1) / self.r(i - 1)
 
     # NOTE: Does not round
