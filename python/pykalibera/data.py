@@ -239,7 +239,7 @@ class Data(object):
         Arguments:
         i -- the mathematical level of which to compute optimal reps.
         costs -- A list of costs for each level, *high* to *low*.
-        round -- When True, the result is rounded (up) to an intgral number
+        round -- When True, the result is rounded (up) to an integral number
                  of repetitions.
         """
 
