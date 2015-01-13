@@ -154,7 +154,7 @@ def test_ti2():
     for i in range(len(expect)):
         assert abs(ti_vec[i] - expect[i]) <= 0.0001
 
-def test_optimal_reps():
+def test_optimal_reps_no_rounding():
     d = Data({
         (0, 0) : [3,4,3],
         (0, 1) : [1.2, 3.1, 3],
@@ -168,11 +168,33 @@ def test_optimal_reps():
     # And suppose the costs (high level to low) are 100, 20 and 3 (seconds)
     # By my reckoning, the optimal repetition counts should be r_1 = 5, r_2 = 2
     # XXX show working XXX
-    got = [ d.optimalreps(i, (100, 20, 3)) for i in [1,2] ]
+    got = [d.optimalreps(i, (100, 20, 3), round=False) for i in [1,2]]
     expect = [4.2937, 1.3023]
 
     for i in range(len(got)):
         assert abs(got[i] - expect[i]) <= 0.001
+
+    for i in got:
+        assert type(i) == float
+
+def test_optimal_reps_with_rounding():
+    """ Same as test_optimal_reps_no_rounding() just with rounding."""
+
+    d = Data({
+        (0, 0) : [3,4,3],
+        (0, 1) : [1.2, 3.1, 3],
+        (1, 0) : [0.2, 1, 1.5],
+        (1, 1) : [1, 2, 3]
+    }, [2, 2, 3])
+
+    got = [d.optimalreps(i, (100, 20, 3)) for i in [1,2]]
+    expect = [5, 2]
+
+    for i in range(len(got)):
+        assert got[i] == expect[i]
+
+    for i in got:
+        assert type(i) == int
 
 def test_worked_example_3_level():
     # three level experiment

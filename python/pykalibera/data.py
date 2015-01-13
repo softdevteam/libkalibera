@@ -75,13 +75,13 @@ def confidence_slice(means, confidence="0.95"):
 def memoize(func):
     """ The @memoize decorator """
     attr = "%s_%s" % (func.func_name, id(func))
-    def memoized(self, *args):
+    def memoized(self, *args, **kwargs):
         d = self._memoization_values
         key = attr, args
         try:
             return d[key]
         except KeyError:
-            res = d[key] = func(self, *args)
+            res = d[key] = func(self, *args, **kwargs)
             return res
     return memoized
 
@@ -233,21 +233,22 @@ class Data(object):
         return self.Si2(i) - self.Si2(i - 1) / self.r(i - 1)
 
     @memoize
-    def optimalreps(self, i, costs):
+    def optimalreps(self, i, costs, round=True):
         """Computes the optimal number of repetitions for a given level.
-        The result is a float. In most cases, the caller should round this to
-        an integral number of repetitions.
 
         Arguments:
         i -- the mathematical level of which to compute optimal reps.
         costs -- A list of costs for each level, *high* to *low*.
+        round -- When True, the result is rounded (up) to an intgral number
+                 of repetitions.
         """
 
         costs = [ float(x) for x in costs ]
         assert 1 <= i < self.n
         index = self.n - i
-        return (costs[index - 1] / costs[index] * \
-                self.Ti2(i) / self.Ti2(i + 1)) ** 0.5
+        res_f =  (costs[index - 1] / costs[index] * \
+                  self.Ti2(i) / self.Ti2(i + 1)) ** 0.5
+        return int(math.ceil(res_f)) if round else res_f
 
     def confidence95(self):
         """Compute the 95% confidence interval."""
