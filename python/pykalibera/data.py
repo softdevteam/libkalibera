@@ -2,6 +2,8 @@ import math, itertools, random
 
 import bz2
 
+from functools import wraps
+
 constants = bz2.decompress("""\
 QlpoOTFBWSZTWbTS4VUAC9bYAEAQAAF/4GAOGZ3e40HH2YJERUKomGbCNMAAtMBaAkCOP9U0/R+q
 qNCqfjAqVGOY3+qk96qmmIp+CCVNDD/1VGjfqkBJpIElG6uN92vE/PP+5IxhMIIgAbOxEMKLMVSq
@@ -75,6 +77,7 @@ def confidence_slice(means, confidence="0.95"):
 def memoize(func):
     """ The @memoize decorator """
     attr = "%s_%s" % (func.func_name, id(func))
+    @wraps(func)
     def memoized(self, *args, **kwargs):
         d = self._memoization_values
         key = attr, args
