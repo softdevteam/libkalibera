@@ -1,10 +1,9 @@
 import sys, os.path, random, math
 import pytest
 
-# Allow to run out of source dir
-HERE = os.path.abspath(os.path.dirname(__file__))
-PARENT = os.path.join(HERE, "..")
-sys.path.append(PARENT)
+import support
+
+support.setup_paths()
 
 from pykalibera.data import Data, _confidence_slice_indicies, _mean
 from pykalibera.data import confidence_slice
