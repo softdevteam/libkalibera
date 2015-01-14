@@ -228,7 +228,7 @@ class Data(object):
         assert 1 <= i <= self.n
         if i == 1:
             return self.Si2(1)
-        # Note: in the "Rigorous benchmarking in reasonable time", the
+        # Note: in the "Rigorous benchmarking in reasonable time" paper, the
         # expression belown was incorrectly shown as being equivalent to:
         #   return self.Si2(i) - self.Ti2(i - 1) / self.r(i - 1)
         # This has since been corrected in a revised version of the paper, and
