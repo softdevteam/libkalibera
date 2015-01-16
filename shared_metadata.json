@@ -1,0 +1,11 @@
+{
+	"_comment": "This file stores metadata that can be shared between package managers, e.g. pip (for Python) and gem (for Ruby).",
+
+
+	"metadata" : {
+		"short_descr": "An implementation of Tomas Kalibera's statistically rigorous benchmarking method.",
+		"long_descr": "libkalibera contains reimplementations of the statistical computations for benchmarking evaluation from the following papers by Tomas Kalibera and Richard Jones: 'Rigorous benchmarking in reasonable time'; 'Quantifying performance changes with effect size confidence intervals'.",
+		"version": 0.1,
+		"url": "http://soft-dev.org/src/libkalibera/"
+	}
+}
