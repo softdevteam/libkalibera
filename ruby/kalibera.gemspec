@@ -1,21 +1,19 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'kalibera/version'
+require 'json'
+
+metadata = JSON.parse(IO.read(File.expand_path('../../shared_metadata.json', __FILE__)))
 
 Gem::Specification.new do |spec|
   spec.name          = "kalibera"
-  spec.version       = Kalibera::VERSION
+  spec.version       = metadata["metadata"]["version"]
   spec.authors       = ["Edd Barrett", "Carl Friedrich Bolz", "Chris Seaton"]
   spec.email         = ["chris@chrisseaton.com"]
-  spec.summary       = %q{An implementation of Tomas Kalibera's statistically rigorous benchmarking method.}
-  spec.description   = %q{An implementation of Tomas Kalibera's statistically rigorous benchmarking method.}
-  spec.homepage      = ""
+  spec.summary       = metadata["metadata"]["short_descr"]
+  spec.description   = metadata["metadata"]["long_descr"]
+  spec.homepage      = metadata["metadata"]["url"]
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.test_files    = spec.files.grep(%r{^test/})
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.7"
