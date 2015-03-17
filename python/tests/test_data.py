@@ -6,7 +6,7 @@ import support
 support.setup_paths()
 
 from pykalibera.data import Data, _confidence_slice_indicies, _mean
-from pykalibera.data import confidence_slice, _geomean
+from pykalibera.data import confidence_slice, _geomean, bootstrap_geomean
 
 # ----------------------------------
 # HELPER FIXTURES
@@ -361,4 +361,24 @@ def test_confidence_quotient_div_zero():
     assert median== float("inf")
 
 def test_geomean():
+    assert _geomean([1]) == 1
     assert _geomean([10, 0.1]) == 1
+
+def test_geomean_data():
+    data1 = Data({
+            (0, ) : [ 2.9, 3.1, 3.0 ],
+            (1, ) : [ 3.1, 2.6, 3.3 ],
+            (2, ) : [ 3.2, 3.0, 2.9 ],
+            }, [3, 3])
+    data2 = Data({
+            (0, ) : [ 3.9, 4.1, 4.0 ],
+            (1, ) : [ 4.1, 3.6, 4.3 ],
+            (2, ) : [ 4.2, 4.0, 3.9 ],
+            }, [3, 3])
+
+    (_, mean1, _) = data1.bootstrap_quotient(data2)
+    (_, mean2, _) = bootstrap_geomean([data1], [data2])
+    assert round(mean1, 3) == round(mean2, 3)
+
+    (_, mean, _) = bootstrap_geomean([data1, data2], [data2, data1])
+    assert round(mean, 5) == 1.0

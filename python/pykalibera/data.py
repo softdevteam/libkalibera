@@ -344,3 +344,19 @@ class Data(object):
                 ratios.append(mean_ra / mean_rb)
         ratios.sort()
         return confidence_slice(ratios, confidence)
+
+def bootstrap_geomean(l_data_a, l_data_b, iterations=10000, confidence='0.95'):
+    if len(l_data_a) != len(l_data_b):
+        raise ValueError("lists need to match")
+    geomeans = []
+    for _ in range(iterations):
+        ratios = []
+        for a, b in zip(l_data_a, l_data_b):
+            ra = a._bootstrap_sample()
+            rb = b._bootstrap_sample()
+            mean_ra = _mean(ra)
+            mean_rb = _mean(rb)
+            ratios.append(mean_ra / mean_rb)
+        geomeans.append(_geomean(ratios))
+    geomeans.sort()
+    return confidence_slice(geomeans, confidence)
