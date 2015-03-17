@@ -124,6 +124,12 @@ def _confidence_slice_indicies(length, confidence_level=Decimal('0.95')):
 def _mean(l):
     return math.fsum(l) / float(len(l))
 
+def _geomean(l):
+    res = 1.0
+    for element in l:
+        res *= element
+    return res ** (1.0 / len(l))
+
 # ---
 
 class Data(object):

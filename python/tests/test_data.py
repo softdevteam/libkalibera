@@ -6,7 +6,7 @@ import support
 support.setup_paths()
 
 from pykalibera.data import Data, _confidence_slice_indicies, _mean
-from pykalibera.data import confidence_slice
+from pykalibera.data import confidence_slice, _geomean
 
 # ----------------------------------
 # HELPER FIXTURES
@@ -353,3 +353,6 @@ def test_confidence_quotient_div_zero():
     # Since all ratios will be +inf, the median should also be +inf
     (_, median, _) = data1.bootstrap_quotient(data2, iterations=1)
     assert median== float("inf")
+
+def test_geomean():
+    assert _geomean([10, 0.1]) == 1
