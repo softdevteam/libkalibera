@@ -58,6 +58,29 @@ def student_t_quantile95(ndeg):
         index = -1 # the quantile converges, we just take the last value
     return constants[index]
 
+
+class ConfRange(tuple):
+    def __new__(cls, *args):
+        assert len(args) == 3
+        return tuple.__new__(cls, args)
+
+    @property
+    def lower(self):
+        return self[0]
+
+    @property
+    def upper(self):
+        return self[2]
+
+    @property
+    def median(self):
+        return self[1]
+
+    @property
+    def error(self):
+        return _mean([self.upper - self.median, self.median - self.lower])
+
+
 def confidence_slice(means, confidence="0.95"):
     """Returns a tuples (lower, median, upper), where:
     lower: lower bound of 95% confidence interval
@@ -72,7 +95,7 @@ def confidence_slice(means, confidence="0.95"):
     # There may be >1 median indicies, i.e. data is even-sized.
     lower, middle_indicies, upper = _confidence_slice_indicies(len(means), confidence)
     median = _mean([means[i] for i in middle_indicies])
-    return means[lower], median, means[upper - 1] # upper is *exclusive*
+    return ConfRange(means[lower], median, means[upper - 1]) # upper is *exclusive*
 
 def memoize(func):
     """ The @memoize decorator """

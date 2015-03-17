@@ -296,11 +296,17 @@ def test_confidence_slice():
     median = 514.5
 
     # Check the implementation.
-    (got_lobo, got_median, got_hibo) = confidence_slice(means)
+    confrange = confidence_slice(means)
+    (got_lobo, got_median, got_hibo) = confrange
+    assert confrange.lower == got_lobo
+    assert confrange.median == got_median
+    assert confrange.upper == got_hibo
 
     assert got_lobo == lobo
     assert got_hibo == hibo
     assert median == got_median
+
+    assert confrange.error == _mean([median - lobo, hibo - median])
 
 
 def test_confidence_slice_pass_confidence_level():
