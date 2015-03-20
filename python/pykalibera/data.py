@@ -85,7 +85,7 @@ def confidence_slice(means, confidence="0.95"):
     """Returns a tuples (lower, median, upper), where:
     lower: lower bound of 95% confidence interval
     median: the median value of the data
-    upper: uper bound of 95% confidence interval
+    upper: upper bound of 95% confidence interval
 
     Arguments:
     means -- the list of means (need not be sorted).
@@ -305,10 +305,11 @@ class Data(object):
         return means
 
     def bootstrap_confidence_interval(self, iterations=10000, confidence="0.95"):
-        """Compute a 95% confidence interval via bootstrap method.
+        """Compute a confidence interval via bootstrap method.
 
         Keyword arguments:
-        iterations -- Number of resamplings to base result upon.
+        iterations -- Number of resamplings to base result upon. Default is 10000.
+        confidence -- The required confidence. Default is "0.95" (95%).
         """
 
         means = self.bootstrap_means(iterations)
