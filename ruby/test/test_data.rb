@@ -369,6 +369,10 @@ class TestKaliberaData < Test::Unit::TestCase
     assert_equal Float::INFINITY, median
   end
 
+  def test_geomean
+    assert_equal 1, Kalibera.geomean([10, 0.1])
+  end
+
   def assert_less_equal(x, y)
     assert x <= y, "#{x.inspect} <= #{y.inspect}"
   end

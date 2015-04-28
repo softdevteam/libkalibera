@@ -108,6 +108,10 @@ module Kalibera
     l.inject(0, :+) / Float(l.size)
   end
 
+  def self.geomean(l)
+    l.inject(1, :*) ** (1.0 / Float(l.size))
+  end
+
   class Data
 
     extend Memoist
