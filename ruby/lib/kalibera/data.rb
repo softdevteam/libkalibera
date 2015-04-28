@@ -341,10 +341,28 @@ module Kalibera
           ratios.push(mean_ra / mean_rb)
         end
       end
-      ratios.sort()
+      ratios.sort!
       Kalibera.confidence_slice(ratios, confidence).values
     end
 
+  end
+
+  def self.bootstrap_geomean(l_data_a, l_data_b, iterations=10000, confidence='0.95')
+    raise "lists need to match" unless l_data_a.size == l_data_b.size
+    geomeans = []
+    iterations.times do
+      ratios = []
+      l_data_a.zip(l_data_b).each do |a, b|
+        ra = a.bootstrap_sample
+        rb = b.bootstrap_sample
+        mean_ra = mean(ra)
+        mean_rb = mean(rb)
+        ratios << mean_ra / mean_rb
+      end
+      geomeans << geomean(ratios)
+    end
+    geomeans.sort!
+    confidence_slice(geomeans, confidence)
   end
 
 end

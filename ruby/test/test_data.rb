@@ -377,7 +377,31 @@ class TestKaliberaData < Test::Unit::TestCase
 
   def test_geomean
     assert_equal 1, Kalibera.geomean([10, 0.1])
+    assert_equal 1, Kalibera.geomean([1])
   end
+
+  # This requires a very large volume of random data, which we can't easily
+  # just store in the mock random generator above.
+
+  #def test_geomean_data
+  #  data1 = TestData.new({
+  #      [0] => [ 2.9, 3.1, 3.0 ],
+  #      [1] => [ 3.1, 2.6, 3.3 ],
+  #      [2] => [ 3.2, 3.0, 2.9 ],
+  #      }, [3, 3])
+  #  data2 = TestData.new({
+  #      [0] => [ 3.9, 4.1, 4.0 ],
+  #      [1] => [ 4.1, 3.6, 4.3 ],
+  #      [2] => [ 4.2, 4.0, 3.9 ],
+  #      }, [3, 3])
+  #
+  #  _, mean1, _ = data1.bootstrap_quotient(data2)
+  #  _, mean2, _ = Kalibera.bootstrap_geomean([data1], [data2])
+  #  assert_equal mean2.round(3), mean1.round(3)
+  #
+  #  (_, mean, _) = Kalibera.bootstrap_geomean([data1, data2], [data2, data1])
+  #  assert_equal 1.0, mean.round(5)
+  #end
 
   def assert_less_equal(x, y)
     assert x <= y, "#{x.inspect} <= #{y.inspect}"
