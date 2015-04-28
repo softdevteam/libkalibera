@@ -307,23 +307,29 @@ class TestKaliberaData < Test::Unit::TestCase
     median = 514.5
 
     # Check the implementation.
-    got_lobo, got_median, got_hibo = Kalibera.confidence_slice(means)
+    confrange = Kalibera.confidence_slice(means)
+    got_lobo, got_median, got_hibo = confrange.values
+    assert_equal got_lobo, confrange.lower
+    assert_equal got_median, confrange.median
+    assert_equal got_hibo, confrange.upper
 
     assert_equal lobo, got_lobo
     assert_equal hibo, got_hibo
     assert_equal got_median, median
+
+    assert_equal Kalibera.mean([median - lobo, hibo - median]), confrange.error
   end
 
   def test_confidence_slice_pass_confidence_level
     means = (0...10).map { |x| Float(x) }
-    low, mean, high = Kalibera.confidence_slice(means, '0.8')
+    low, mean, high = Kalibera.confidence_slice(means, '0.8').values
     assert_equal (4 + 5) / 2.0, mean
     assert_equal 1, low
     assert_equal 8, high
 
 
     means = (0...11).map { |x| Float(x) }
-    low, mean, high = Kalibera.confidence_slice(means, '0.8')
+    low, mean, high = Kalibera.confidence_slice(means, '0.8').values
     assert_equal 5, mean
     assert_equal 1, low
     assert_equal 9, high
@@ -343,8 +349,8 @@ class TestKaliberaData < Test::Unit::TestCase
 
     data1.reset_local_rand
     data2.reset_local_rand
-    a = data1.bootstrap_sample()
-    b = data2.bootstrap_sample()
+    a = data1.bootstrap_sample
+    b = data2.bootstrap_sample
 
     data1.reset_local_rand
     data2.reset_local_rand

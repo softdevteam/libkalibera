@@ -60,6 +60,12 @@ module Kalibera
     CONSTANTS[index]
   end
 
+  ConfRange = Struct.new(:lower, :median, :upper) do
+    def error
+      Kalibera.mean([upper - median, median - lower])
+    end
+  end
+
   # Returns a tuples (lower, median, upper), where:
   # lower: lower bound of 95% confidence interval
   # median: the median value of the data
@@ -72,7 +78,7 @@ module Kalibera
     # There may be >1 median indicies, i.e. data is even-sized.
     lower, middle_indicies, upper = confidence_slice_indicies(means.size, confidence)
     median = mean(middle_indicies.map { |i| means[i] })
-    [means[lower], median, means[upper - 1]] # upper is *exclusive*
+    ConfRange.new(means[lower], median, means[upper - 1]) # upper is *exclusive*
   end
 
   # Returns a triple (lower, mean_indicies, upper) so that l[lower:upper]
@@ -336,7 +342,7 @@ module Kalibera
         end
       end
       ratios.sort()
-      Kalibera.confidence_slice(ratios, confidence)
+      Kalibera.confidence_slice(ratios, confidence).values
     end
 
   end
