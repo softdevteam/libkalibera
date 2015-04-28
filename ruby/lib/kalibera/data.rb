@@ -69,7 +69,7 @@ module Kalibera
   # Returns a tuples (lower, median, upper), where:
   # lower: lower bound of 95% confidence interval
   # median: the median value of the data
-  # upper: uper bound of 95% confidence interval
+  # upper: upper bound of 95% confidence interval
   # 
   # Arguments:
   # means -- the list of means (need not be sorted).
@@ -298,10 +298,11 @@ module Kalibera
       means
     end
 
-    # Compute a 95% confidence interval via bootstrap method.
+    # Compute a confidence interval via bootstrap method.
     #
     # Keyword arguments:
-    # iterations -- Number of resamplings to base result upon.
+    # iterations -- Number of resamplings to base result upon. Default is 10000.
+    # confidence -- The required confidence. Default is "0.95" (95%).
     def bootstrap_confidence_interval(iterations=10000, confidence="0.95")
       means = bootstrap_means(iterations)
       confidence_slice(means, confidence)
