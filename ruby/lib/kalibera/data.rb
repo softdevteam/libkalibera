@@ -87,9 +87,9 @@ module Kalibera
   #
   # Keyword arguments:
   # confidence_level -- desired level of confidence as a Decimal instance.
-  def self.confidence_slice_indicies(length, confidence_level=BigDecimal.new('0.95'))
+  def self.confidence_slice_indicies(length, confidence_level=BigDecimal('0.95'))
     raise unless !confidence_level.instance_of?(Float)
-    confidence_level = BigDecimal.new(confidence_level)
+    confidence_level = BigDecimal(confidence_level)
     raise unless confidence_level.instance_of?(BigDecimal)
     exclude = (1 - confidence_level) / 2
 
