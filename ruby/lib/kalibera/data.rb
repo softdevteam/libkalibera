@@ -305,7 +305,7 @@ module Kalibera
     # confidence -- The required confidence. Default is "0.95" (95%).
     def bootstrap_confidence_interval(iterations=10000, confidence="0.95")
       means = bootstrap_means(iterations)
-      confidence_slice(means, confidence)
+      Kalibera.confidence_slice(means, confidence)
     end
 
     def random_measurement_sample(index=[])
