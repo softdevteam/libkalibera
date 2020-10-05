@@ -4,7 +4,7 @@ metadata = JSON.parse(IO.read(File.expand_path('../../shared_metadata.json', __F
 
 Gem::Specification.new do |spec|
   spec.name          = "kalibera"
-  spec.version       = metadata["metadata"]["version"]
+  spec.version       = metadata["metadata"]["version"] + ".1"
   spec.authors       = ["Edd Barrett", "Carl Friedrich Bolz", "Chris Seaton"]
   spec.email         = ["chris@chrisseaton.com"]
   spec.summary       = metadata["metadata"]["short_descr"]
@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "test-unit", "~> 3.3.6"
 
   spec.add_dependency "rbzip2", "~> 0.2.0"
   spec.add_dependency "memoist", "~> 0.11.0"

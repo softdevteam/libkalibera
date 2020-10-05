@@ -2,3 +2,4 @@
 *.pyc
 *.gem
 doc
+ruby/Gemfile.lock
