@@ -290,7 +290,7 @@ module Kalibera
     # iterations -- Number of resamples (and thus means) generated.
     def bootstrap_means(iterations=1000)
       means = []
-      for i in 0...iterations
+      for _ in 0...iterations
         values = bootstrap_sample()
         means.push(Kalibera.mean(values))
       end
