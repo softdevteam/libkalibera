@@ -16,10 +16,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^test/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.7"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "test-unit", "~> 3.3.6"
+  spec.add_development_dependency "rake", "~> 13.0.3"
+  spec.add_development_dependency "test-unit", "~> 3.4.1"
 
-  spec.add_dependency "rbzip2", "~> 0.2.0"
-  spec.add_dependency "memoist", "~> 0.11.0"
+  spec.add_dependency "rbzip2", "~> 0.3.0"
+  spec.add_dependency "memoist", "~> 0.16.2"
 end

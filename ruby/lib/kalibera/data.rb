@@ -6,7 +6,7 @@ require "memoist"
 
 module Kalibera
 
-  CONSTANTS = RBzip2::Decompressor.new(StringIO.new(Base64.decode64("""\
+  CONSTANTS = RBzip2.default_adapter::Decompressor.new(StringIO.new(Base64.decode64("""\
   QlpoOTFBWSZTWbTS4VUAC9bYAEAQAAF/4GAOGZ3e40HH2YJERUKomGbCNMAAtMBaAkCOP9U0/R+q
   qNCqfjAqVGOY3+qk96qmmIp+CCVNDD/1VGjfqkBJpIElG6uN92vE/PP+5IxhMIIgAbOxEMKLMVSq
   VWtZmZaEklAAAttoAAAAAAAAAAAAEklAAEklABttkksklkkknVu2dX1vW9yWrkuXJJJJJJJJJJKK
