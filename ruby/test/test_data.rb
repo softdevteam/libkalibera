@@ -228,7 +228,7 @@ class TestKaliberaData < Test::Unit::TestCase
     assert_equal 2.6, data.Si2(2).round(1)
     assert_equal 3.6, data.Si2(3).round(1)
     assert_equal 16.5, data.Ti2(1).round(1)
-    assert_equal -5.7, data.Ti2(2).round(1)
+    assert_equal (-5.7), data.Ti2(2).round(1)
     assert_equal 2.3, data.Ti2(3).round(1)
   end
 
@@ -284,7 +284,7 @@ class TestKaliberaData < Test::Unit::TestCase
     # For a data set of size 1000, we expect alpha/2 to be 25
     # (for a 95% confidence interval)
     alpha_over_two = means.size * 0.025
-    assert(alpha_over_two) == 25
+    assert_equal alpha_over_two, 25
 
     # Therefore we lose 25 items off each end of the means list.
     # The first 25 indicies are 0, ...0, 24, so lower bound should be index 25.
