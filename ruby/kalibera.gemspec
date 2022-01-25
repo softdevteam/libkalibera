@@ -4,7 +4,7 @@ metadata = JSON.parse(IO.read(File.expand_path('../../shared_metadata.json', __F
 
 Gem::Specification.new do |spec|
   spec.name          = "kalibera"
-  spec.version       = metadata["metadata"]["version"].to_s + ".1"
+  spec.version       = metadata["metadata"]["version"].to_s + ".2"
   spec.authors       = ["Edd Barrett", "Carl Friedrich Bolz", "Chris Seaton"]
   spec.email         = ["chris@chrisseaton.com"]
   spec.summary       = metadata["metadata"]["short_descr"]
